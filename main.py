@@ -2,9 +2,11 @@ import logging
 import json
 import random
 import os
+import warnings
 from binance.client import Client
 from dotenv import load_dotenv
 
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
@@ -101,12 +103,16 @@ def main_request(api_key, api_secret, json_input):
     if result is None:
         return
     for i in range(json_input['number']):
+        # Для тестовых заказов
         client.create_test_order(symbol='BTCUSDT', side='BUY', type='MARKET', quoteOrderQty=result[i])
+        # Для реальных заказов
+        # client.create_order(symbol='BTCUSDT', side='BUY', type='MARKET', quoteOrderQty=result[i])
 
 
 if __name__ == '__main__':
     api_key = os.environ['BINANCE_API_KEY_TEST']
     api_secret = os.environ['BINANCE_API_SECRET_TEST']
+    # Проведём тесты
     f = open('test1.json')
     json_input = json.load(f)
     main_request(api_key, api_secret, json_input)
